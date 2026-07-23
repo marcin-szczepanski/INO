@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inżynieria Oprogramowania — Materiały do wykładów</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:  #0D2137;
+    --blue:  #1660A8;
+    --teal:  #0A8A87;
+    --rule:  #D6DCE4;
+    --light: #F7F8FA;
+    --slate: #4A5568;
+    --body:  #1E2B3C;
+    --sans:  'Montserrat', system-ui, sans-serif;
+    --serif: 'Merriweather', Georgia, serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--light);
+    color: var(--body);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: 52px 40px 44px;
+  }
+  header .eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 12px;
+  }
+  header h1 {
+    font-size: 36px; font-weight: 800;
+    line-height: 1.15; margin-bottom: 12px;
+  }
+  header h1 span { color: var(--teal); }
+  header .meta {
+    font-size: 14px; color: rgba(255,255,255,.45);
+    margin-top: 6px;
+  }
+  header .meta b { color: rgba(255,255,255,.7); font-weight: 600; }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  .section-label {
+    font-size: 10px; font-weight: 800;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 20px;
+  }
+
+  /* LECTURE GRID */
+  .lectures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 52px;
+  }
+  @media (max-width: 640px) { .lectures { grid-template-columns: 1fr; } }
+
+  .lecture-card {
+    background: #fff;
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px 24px;
+    text-decoration: none;
+    color: var(--body);
+    display: block;
+    transition: border-color .15s, box-shadow .15s, transform .12s;
+    position: relative;
+    overflow: hidden;
+  }
+  .lecture-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--teal);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .lecture-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 4px 20px rgba(10,138,135,.12);
+    transform: translateY(-2px);
+  }
+  .lecture-card:hover::before { opacity: 1; }
+
+  .lecture-card.unavailable {
+    opacity: .45; pointer-events: none;
+    background: var(--light);
+  }
+  .lecture-card.unavailable::before { display: none; }
+
+  .card-top {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .card-num {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: .1em; color: var(--teal);
+    background: rgba(10,138,135,.1);
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .card-date {
+    font-size: 11px; color: var(--slate);
+    font-weight: 500;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700;
+    color: var(--navy); line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 10px;
+  }
+  .tag {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 12px;
+    background: rgba(22,96,168,.08);
+    color: var(--blue);
+  }
+  .tag.teal { background: rgba(10,138,135,.08); color: var(--teal); }
+  .tag.soon { background: rgba(74,85,104,.08); color: var(--slate); }
+
+  .coming-soon {
+    font-size: 11px; font-weight: 600;
+    color: var(--slate); margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: #fff;
+    border: 1.5px solid var(--rule);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 640px) { .info-box { grid-template-columns: 1fr; } }
+  .info-item { }
+  .info-item .label {
+    font-size: 10px; font-weight: 800;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 4px;
+  }
+  .info-item .value {
+    font-size: 14px; font-weight: 600;
+    color: var(--navy);
+  }
+  .info-item .sub {
+    font-size: 12px; color: var(--slate); margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--slate);
+    padding-bottom: 32px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Informatyka · studia stacjonarne I stopnia · III rok · V semestr</div>
+  <h1>Inżynieria<br><span>oprogramowania</span></h1>
+  <p class="meta">dr inż. Marcin Szczepański</p>
+</header>
+
+<main>
+
+  <div class="section-label">Wykłady</div>
+
+  <div class="lectures">
+
+    <a class="lecture-card" href="wyklad-01.html">
+      <div class="card-top">
+        <span class="card-num">Wykład 1</span>
+      </div>
+      <div class="card-title">Wprowadzenie do inżynierii oprogramowania. Problemy, jakość i koszty błędów</div>
+      <div class="card-tags">
+        <span class="tag">Jakość</span>
+        <span class="tag">Koszty błędów</span>
+        <span class="tag teal">AI — intro</span>
+      </div>
+    </a>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 2</span>
+      </div>
+      <div class="card-title">Cykl życia oprogramowania. Planowanie projektu i zarządzanie ryzykiem</div>
+      <div class="card-tags">
+        <span class="tag soon">Waterfall</span>
+        <span class="tag soon">SCRUM</span>
+        <span class="tag soon">Szacowanie</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 3</span>
+      </div>
+      <div class="card-title">Analiza wymagań — funkcjonalne i niefunkcjonalne, user stories</div>
+      <div class="card-tags">
+        <span class="tag soon">Wymagania</span>
+        <span class="tag soon">User stories</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 4</span>
+      </div>
+      <div class="card-title">Model C4, UML — przypadki użycia i diagramy sekwencji</div>
+      <div class="card-tags">
+        <span class="tag soon">C4</span>
+        <span class="tag soon">UML</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 5</span>
+      </div>
+      <div class="card-title">Architektura i wzorce architektoniczne. Podstawy testowania i TDD</div>
+      <div class="card-tags">
+        <span class="tag soon">Architektura</span>
+        <span class="tag soon">TDD</span>
+        <span class="tag soon">Testy jedn.</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 6</span>
+      </div>
+      <div class="card-title">Wzorce projektowe, prototypowanie</div>
+      <div class="card-tags">
+        <span class="tag soon">Singleton</span>
+        <span class="tag soon">Observer</span>
+        <span class="tag soon">MVC</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 7</span>
+      </div>
+      <div class="card-title">Projektowanie obiektowe i zasady SOLID</div>
+      <div class="card-tags">
+        <span class="tag soon">SOLID</span>
+        <span class="tag soon">OOP</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 8</span>
+      </div>
+      <div class="card-title">UML — diagram stanów. Git, code review, CI/CD i zarządzanie konfiguracją</div>
+      <div class="card-tags">
+        <span class="tag soon">Git</span>
+        <span class="tag soon">CI/CD</span>
+        <span class="tag soon">Code review</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 9</span>
+      </div>
+      <div class="card-title">Diagram komponentów i diagram wdrożenia — UML vs C4</div>
+      <div class="card-tags">
+        <span class="tag soon">Komponenty</span>
+        <span class="tag soon">Wdrożenie</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 10</span>
+      </div>
+      <div class="card-title">Testowanie integracyjne, pokrycie kodu, pogłębienie CI/CD</div>
+      <div class="card-tags">
+        <span class="tag soon">Testy integr.</span>
+        <span class="tag soon">Coverage</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 11</span>
+      </div>
+      <div class="card-title">Testy akceptacyjne i użyteczności, automatyzacja testów</div>
+      <div class="card-tags">
+        <span class="tag soon">Given-When-Then</span>
+        <span class="tag soon">UAT</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 12</span>
+      </div>
+      <div class="card-title">Dług techniczny, SonarLint, refaktoryzacja. Zarządzanie jakością i AI — etyka i ograniczenia</div>
+      <div class="card-tags">
+        <span class="tag soon">SonarLint</span>
+        <span class="tag soon">Refaktoryzacja</span>
+        <span class="tag teal">AI — etyka</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+    <div class="lecture-card unavailable">
+      <div class="card-top">
+        <span class="card-num">Wykład 14</span>
+      </div>
+      <div class="card-title">Utrzymanie i ewolucja oprogramowania — prawa ewolucji, systemy legacy</div>
+      <div class="card-tags">
+        <span class="tag soon">Legacy</span>
+        <span class="tag soon">Ewolucja</span>
+        <span class="tag soon">Prawa Lehmana</span>
+      </div>
+      <div class="coming-soon">Materiały pojawią się wkrótce</div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  Inżynieria Oprogramowania · dr inż. Marcin Szczepański
+</footer>
+
+</body>
+</html>
