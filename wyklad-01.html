@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wykład 1 — Wprowadzenie do inżynierii oprogramowania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Montserrat:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #0D2137;
+    --blue:   #1660A8;
+    --teal:   #0A8A87;
+    --amber:  #C06800;
+    --amber-bg: #FFF8EE;
+    --amber-border: #E8A045;
+    --slate:  #4A5568;
+    --light:  #F7F8FA;
+    --white:  #FFFFFF;
+    --rule:   #D6DCE4;
+    --body-text: #1E2B3C;
+    --serif: 'Merriweather', Georgia, serif;
+    --sans:  'Montserrat', system-ui, sans-serif;
+    --mono:  'JetBrains Mono', monospace;
+    --content-width: 760px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--body-text);
+    background: var(--light);
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy);
+    color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+    height: 52px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    font-family: var(--sans);
+  }
+  #topbar .course { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .6; }
+  #topbar .title  { font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+  #topbar .meta   { font-size: 12px; opacity: .5; white-space: nowrap; }
+
+  /* ── LAYOUT ── */
+  #layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 52px;
+  }
+
+  /* ── SIDEBAR TOC ── */
+  #toc {
+    position: fixed; top: 52px; left: 0; bottom: 0;
+    width: 240px;
+    background: var(--navy);
+    color: #fff;
+    overflow-y: auto;
+    padding: 24px 0 40px;
+    z-index: 90;
+  }
+  #toc .toc-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: rgba(255,255,255,.35);
+    padding: 0 22px 12px;
+  }
+  #toc a {
+    display: block; text-decoration: none;
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,.55);
+    padding: 7px 22px;
+    border-left: 3px solid transparent;
+    transition: color .15s, border-color .15s, background .15s;
+    line-height: 1.4;
+  }
+  #toc a:hover, #toc a.active {
+    color: #fff; border-left-color: var(--teal);
+    background: rgba(255,255,255,.06);
+  }
+  #toc .toc-divider { height: 1px; background: rgba(255,255,255,.08); margin: 10px 22px; }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    margin-left: 240px;
+    flex: 1;
+    padding: 0 40px 80px;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    background: var(--navy);
+    color: #fff;
+    padding: 52px 40px 44px;
+    margin: 0 -40px 0;
+  }
+  #hero .eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 14px;
+  }
+  #hero h1 {
+    font-family: var(--sans); font-size: 32px; font-weight: 800;
+    line-height: 1.2; max-width: var(--content-width);
+    margin-bottom: 14px;
+  }
+  #hero h1 span { color: var(--teal); }
+  #hero .subtitle {
+    font-family: var(--sans); font-size: 14px;
+    color: rgba(255,255,255,.5); font-weight: 400;
+    max-width: var(--content-width);
+    line-height: 1.5;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    max-width: var(--content-width);
+    padding: 48px 0 8px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 8px;
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: 18px;
+    margin-bottom: 26px;
+  }
+  .section-num {
+    font-family: var(--sans); font-size: 11px; font-weight: 800;
+    letter-spacing: .1em; color: var(--teal);
+    background: rgba(10,138,135,.1);
+    padding: 4px 9px; border-radius: 4px;
+    white-space: nowrap; margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .section h2 {
+    font-family: var(--sans); font-size: 22px; font-weight: 800;
+    color: var(--navy); line-height: 1.25;
+  }
+
+  /* ── BODY TEXT ── */
+  .section p {
+    margin-bottom: 18px;
+    font-size: 16.5px;
+    color: var(--body-text);
+  }
+  .section p:last-child { margin-bottom: 0; }
+  .section p strong { color: var(--navy); font-weight: 700; }
+
+  /* ── CONCEPT TERM HIGHLIGHT ── */
+  .term {
+    color: var(--blue); font-weight: 700; font-style: italic;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pullquote {
+    border-left: 4px solid var(--teal);
+    padding: 16px 24px;
+    margin: 28px 0;
+    background: rgba(10,138,135,.05);
+    border-radius: 0 8px 8px 0;
+    font-size: 16px;
+    color: var(--navy);
+    font-style: italic;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { margin: 28px 0; overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--sans); font-size: 14px;
+  }
+  thead { background: var(--navy); color: #fff; }
+  thead th {
+    padding: 12px 16px; text-align: left;
+    font-weight: 600; letter-spacing: .03em;
+  }
+  tbody tr { border-bottom: 1px solid var(--rule); }
+  tbody tr:nth-child(even) { background: rgba(22,96,168,.04); }
+  tbody td { padding: 11px 16px; line-height: 1.5; }
+  tbody td:first-child { font-weight: 600; color: var(--navy); }
+  .table-caption {
+    font-family: var(--sans); font-size: 12px;
+    color: var(--slate); margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ── QUALITY ATTRIBUTE CARDS ── */
+  .attr-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin: 28px 0;
+  }
+  .attr-card {
+    border: 1.5px solid var(--rule);
+    border-radius: 10px; padding: 20px 22px;
+    background: var(--white);
+    border-top: 4px solid var(--blue);
+  }
+  .attr-card h4 {
+    font-family: var(--sans); font-size: 14px; font-weight: 800;
+    color: var(--navy); margin-bottom: 4px;
+  }
+  .attr-card .attr-en {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--teal); margin-bottom: 10px; display: block;
+  }
+  .attr-card p {
+    font-size: 14px !important; line-height: 1.6 !important;
+    margin-bottom: 0 !important;
+    color: var(--slate) !important;
+  }
+
+  /* ── PROCESS FLOW ── */
+  .process-flow {
+    display: flex; gap: 0; margin: 28px 0;
+    border: 1.5px solid var(--rule);
+    border-radius: 10px; overflow: hidden;
+  }
+  .process-step {
+    flex: 1; padding: 18px 16px; background: var(--white);
+    border-right: 1px solid var(--rule); position: relative;
+  }
+  .process-step:last-child { border-right: none; }
+  .process-step::after {
+    content: '→';
+    position: absolute; right: -11px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--blue); font-size: 16px; font-weight: bold;
+    z-index: 1; background: var(--white);
+  }
+  .process-step:last-child::after { display: none; }
+  .process-step .ps-num {
+    font-family: var(--sans); font-size: 10px; font-weight: 800;
+    letter-spacing: .1em; color: var(--teal); margin-bottom: 5px;
+  }
+  .process-step h4 {
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    color: var(--navy); margin-bottom: 6px;
+  }
+  .process-step p {
+    font-size: 12px !important; color: var(--slate) !important;
+    line-height: 1.5 !important; margin: 0 !important;
+  }
+
+  /* ── DISCUSSION BOX ── */
+  .discussion {
+    background: var(--amber-bg);
+    border: 1.5px solid var(--amber-border);
+    border-radius: 10px; padding: 24px 28px;
+    margin: 36px 0;
+  }
+  .disc-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .disc-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--amber); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; font-family: var(--sans);
+    flex-shrink: 0;
+  }
+  .disc-label {
+    font-family: var(--sans); font-size: 11px; font-weight: 800;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: var(--amber);
+  }
+  .discussion .question {
+    font-size: 16px !important; font-weight: 700 !important;
+    color: var(--navy) !important; margin-bottom: 18px !important;
+    font-style: italic;
+  }
+
+  /* ── ANSWER ACCORDION ── */
+  .answer-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+    font-family: var(--sans); font-size: 12px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--amber);
+    border: 1.5px solid var(--amber-border);
+    background: var(--white);
+    padding: 8px 14px; border-radius: 6px;
+    width: fit-content;
+    transition: background .15s;
+    margin-bottom: 0;
+  }
+  .answer-toggle:hover { background: rgba(192,104,0,.07); }
+  .answer-toggle .arrow { transition: transform .2s; }
+  .answer-toggle.open .arrow { transform: rotate(90deg); }
+  .answer-body {
+    display: none; margin-top: 14px;
+    padding: 18px 20px;
+    background: var(--white);
+    border: 1px solid var(--amber-border);
+    border-radius: 0 0 8px 8px;
+    border-top: none;
+  }
+  .answer-body.open { display: block; }
+  .answer-item {
+    font-family: var(--sans); font-size: 13.5px;
+    color: var(--body-text); line-height: 1.6;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0ece5;
+  }
+  .answer-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .answer-item::before { content: '„'; color: var(--amber); font-size: 18px; font-weight: 800; }
+  .answer-item::after  { content: '”'; color: var(--amber); font-size: 18px; font-weight: 800; }
+
+  /* ── AI INTRO BOX ── */
+  .ai-box {
+    background: linear-gradient(135deg, #0D2137 0%, #1660A8 100%);
+    border-radius: 12px; padding: 28px 32px;
+    margin: 28px 0; color: #fff;
+  }
+  .ai-box .ai-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 800;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 10px;
+  }
+  .ai-box h3 {
+    font-family: var(--sans); font-size: 18px; font-weight: 800;
+    margin-bottom: 14px; color: #fff;
+  }
+  .ai-box p {
+    font-size: 15px !important; color: rgba(255,255,255,.8) !important;
+    line-height: 1.7 !important; margin-bottom: 12px !important;
+  }
+  .ai-uses {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+  }
+  .ai-tag {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.9);
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .ai-tag.good { border-color: var(--teal); color: #6ECECE; }
+  .ai-tag.bad  { border-color: #E8A045; color: #F0C070; }
+
+  /* ── LEARNING GOALS ── */
+  #goals {
+    max-width: var(--content-width);
+    padding: 40px 0 8px;
+    margin-bottom: 8px;
+  }
+  #goals .goals-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 800;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 18px;
+  }
+  #goals h2 {
+    font-family: var(--sans); font-size: 20px; font-weight: 800;
+    color: var(--navy); margin-bottom: 22px;
+    line-height: 1.25;
+  }
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 640px) { .goals-grid { grid-template-columns: 1fr; } }
+  .goal-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    background: var(--white);
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+  }
+  .goal-check {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: rgba(10,138,135,.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--teal); font-weight: 800;
+    margin-top: 1px;
+  }
+  .goal-item p {
+    font-family: var(--sans); font-size: 13.5px;
+    color: var(--body-text); line-height: 1.5; margin: 0;
+  }
+  .goal-item p strong { color: var(--navy); }
+  #goals .goals-note {
+    font-family: var(--sans); font-size: 12px;
+    color: var(--slate); margin-top: 16px;
+    font-style: italic;
+  }
+
+  /* ── SUMMARY SECTION ── */
+  #summary {
+    background: var(--navy);
+    color: #fff;
+    margin: 48px -40px -80px;
+    padding: 40px 40px 60px;
+  }
+  #summary h2 {
+    font-family: var(--sans); font-size: 18px; font-weight: 800;
+    letter-spacing: .05em; margin-bottom: 24px;
+    color: var(--teal); text-transform: uppercase;
+    letter-spacing: .12em; font-size: 12px;
+  }
+  .summary-items {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; max-width: var(--content-width);
+  }
+  .summary-item {
+    padding: 18px 20px;
+    background: rgba(255,255,255,.06);
+    border-radius: 8px;
+    border-left: 3px solid var(--teal);
+  }
+  .summary-item p {
+    font-family: var(--sans); font-size: 14px;
+    color: rgba(255,255,255,.8); line-height: 1.6;
+    margin: 0;
+  }
+  .next-lecture {
+    margin-top: 32px; max-width: var(--content-width);
+    padding: 18px 24px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px;
+    font-family: var(--sans); font-size: 14px;
+    color: rgba(255,255,255,.6);
+  }
+  .next-lecture strong { color: var(--teal); }
+
+  /* ── SCROLL PROGRESS ── */
+  #progress {
+    position: fixed; top: 52px; left: 240px; right: 0;
+    height: 3px; background: rgba(10,138,135,.15);
+    z-index: 99;
+  }
+  #progress-bar {
+    height: 100%; width: 0%; background: var(--teal);
+    transition: width .1s linear;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    #toc { display: none; }
+    #main { margin-left: 0; }
+    #progress { left: 0; }
+    .attr-grid { grid-template-columns: 1fr; }
+    .summary-items { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div>
+    <div class="course">Inżynieria Oprogramowania · V semestr</div>
+    <div class="title">Wykład 1</div>
+  </div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="progress"><div id="progress-bar"></div></div>
+
+<div id="layout">
+
+<!-- SIDEBAR TOC -->
+<nav id="toc">
+  <div class="toc-label">Spis treści</div>
+  <a href="#hero">↑ Start</a>
+  <a href="#goals">Czego się nauczysz</a>
+  <div class="toc-divider"></div>
+  <a href="#s1">1 · Kiedy samo kodowanie nie wystarczy</a>
+  <a href="#s2">2 · Historia kosztownych katastrof</a>
+  <a href="#s3">3 · Różnorodność systemów</a>
+  <a href="#s4">4 · Koszty błędów</a>
+  <a href="#s5">5 · Jakość oprogramowania</a>
+  <a href="#s6">6 · Podstawowe aktywności</a>
+  <a href="#s7">7 · Etyka zawodowa</a>
+  <a href="#s8">8 · AI jako narzędzie dewelopera</a>
+  <div class="toc-divider"></div>
+  <a href="#summary">↓ Podsumowanie</a>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HERO -->
+  <div id="hero">
+    <div class="eyebrow">Wykład 1 — Wprowadzenie</div>
+    <h1>Inżynieria<br><span>oprogramowania</span><br>— po co i dlaczego</h1>
+    <p class="subtitle">Problemy wytwarzania oprogramowania · Jakość i koszty błędów · AI jako narzędzie dewelopera</p>
+  </div>
+
+  <!-- LEARNING GOALS -->
+  <div id="goals">
+    <div class="goals-label">Czego się dzisiaj nauczysz</div>
+    <h2>Po tym wykładzie będziesz wiedzieć,<br>czym jest inżynieria oprogramowania i dlaczego ma dla ciebie znaczenie.</h2>
+    <div class="goals-grid">
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Czym różni się <strong>inżynieria oprogramowania</strong> od „zwykłego programowania” i dlaczego ta różnica ma znaczenie w komercyjnych projektach</p>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Dlaczego błędy odkryte po wdrożeniu kosztują <strong>do 100× więcej</strong> niż te znalezione na etapie wymagań — i co z tego wynika dla twojej pracy</p>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Jakie są <strong>cztery atrybuty jakości</strong> dobrego oprogramowania i dlaczego zawsze stoją ze sobą w konflikcie</p>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Na jakie <strong>cztery podstawowe aktywności</strong> składa się każdy projekt — niezależnie od metodyki, języka i branży</p>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Jakie <strong>obowiązki etyczne</strong> wiążą się z zawodem inżyniera oprogramowania i jakie realne dylematy czekają cię w pracy</p>
+      </div>
+      <div class="goal-item">
+        <div class="goal-check">✓</div>
+        <p>Jak <strong>rozsądnie korzystać z narzędzi AI</strong> (GitHub Copilot, ChatGPT) — co potrafią, czego nie, i kiedy mogą cię wciągnąć w kłopoty</p>
+      </div>
+    </div>
+    <p class="goals-note">Na następnym wykładzie: modele procesu wytwarzania oprogramowania — waterfall, SCRUM i planowanie projektu.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Kiedy „po prostu kodowanie” przestaje wystarczać</h2>
+    </div>
+    <p>Wyobraź sobie, że prosisz znajomego po fachu o pomoc z przeprowadzką. Przynosi samochód osobowy. Razem wnosisz kanapę, kilka kartonów, rower — i jakoś idzie. Teraz wyobraź sobie, że jesteś firmą przeprowadzkową obsługującą pięćdziesiąt zleceń miesięcznie, zatrudniającą dwudziestu pracowników, z flotą pojazdów, harmonogramem, ubezpieczeniem i klientami oczekującymi punktualności co do minuty. Samochód znajomego już nie wystarczy — i to nie dlatego, że jest za mały, ale dlatego, że brakuje <em>procesu</em>, organizacji, narzędzi i metod, które zamieniają dobrą wolę w niezawodną usługę.</p>
+    <p>To samo dotyczy oprogramowania. Napisanie programu liczącego silnię to programowanie. Zbudowanie systemu obsługującego miliony transakcji bankowych dziennie, działającego przez lata, utrzymywanego przez zmieniający się zespół i rozbudowywanego o nowe funkcje bez rozsypania się w drobny mak — to już coś zupełnie innego. Tym czymś innym zajmuje się <strong class="term">inżynieria oprogramowania</strong>.</p>
+    <p>Inżynieria oprogramowania to dyscyplina inżynierska zajmująca się <em>wszystkimi</em> aspektami wytwarzania oprogramowania — od wstępnej koncepcji produktu aż po jego wycofanie z eksploatacji. Kluczowe są tu dwa słowa: <em>inżynierska</em> (stosujemy sprawdzone metody, nie działamy na wyczucie) i <em>wszystkimi</em> (nie tylko pisanie kodu, ale też rozumienie wymagań, projektowanie architektury, testowanie, wdrażanie i utrzymanie).</p>
+    <p>Warto też odróżnić inżynierię oprogramowania od informatyki jako nauki. Informatyka bada fundamenty — algorytmy, teorie obliczeń, struktury danych — tak jak fizyka teoretyczna bada prawa natury. Inżynieria oprogramowania stosuje te fundamenty w praktyce, tak jak inżynieria mechaniczna stosuje fizykę do budowania mostów. Most musi być nie tylko poprawnie obliczony, ale też zbudowany na czas, w budżecie, bezpiecznie i tak, żeby dało się go konserwować przez dekady. Z oprogramowaniem jest dokładnie tak samo.</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Dlaczego potrzebujemy dyscypliny — historia kosztownych katastrof</h2>
+    </div>
+    <p>Można by pomyśleć: „przecież piszemy programy na studiach i jakoś to działa”. Problem polega na tym, że <em>„jakoś to działa”</em> kompletnie nie wystarcza, gdy system steruje samolotem, obsługuje transfuzje krwi albo zarządza rachunkami milionów ludzi. Historia informatyki obfituje w przypadki, w których brak inżynierskiej dyscypliny skończył się tragicznie lub bardzo kosztownie.</p>
+    <p>Jeden z najbardziej znanych przykładów to <strong>Therac-25</strong> — urządzenie do radioterapii z lat osiemdziesiątych. Jego oprogramowanie zawierało błąd synchronizacji (tzw. race condition), który w pewnych sekwencjach działań operatora powodował podanie pacjentowi dawki promieniowania kilkadziesiąt razy wyższej niż zamierzona. Co najmniej trzy osoby zmarły w wyniku tego błędu. Twórcy systemu przenieśli mechaniczne blokady bezpieczeństwa ze starszego urządzenia do kodu programu — i nie przetestowali tego wystarczająco starannie.</p>
+    <p>Inny klasyczny przykład: <strong>Mars Climate Orbiter (NASA, 1999)</strong>. Sonda wartości 125 milionów dolarów spłonęła w atmosferze Marsa, bo jeden podsystem obliczał dane nawigacyjne w jednostkach imperialnych (funty na sekundę), a drugi oczekiwał jednostek SI (niutony na sekundę). Nikt nie sprawdził interfejsu między tymi modułami. Katastrofa była wyłącznie skutkiem braku spójnej kontroli inżynierskiej nad projektem.</p>
+    <p>Bliżej naszych czasów — systemy informatyczne w administracji publicznej. Wiele krajów wydało miliardy na systemy, które nigdy nie zadziałały: brytyjski krajowy system NHS porzucony po wydaniu ponad 10 miliardów funtów, systemy podatkowe i emerytalne niezdolne do poprawnego przetwarzania danych przez lata. We wszystkich tych przypadkach powtarzają się te same przyczyny: niejasne wymagania, brak kontroli nad zmianami, niewystarczające testowanie, zbyt optymistyczne harmonogramy.</p>
+
+    <div class="discussion">
+      <div class="disc-header">
+        <div class="disc-icon">?</div>
+        <span class="disc-label">Dyskusja</span>
+      </div>
+      <p class="question">Przypomnij sobie dowolny projekt napisany przez ciebie na studiach — zaliczenie, zadanie domowe, cokolwiek. Wyobraź sobie, że zupełnie obca osoba miałaby przejąć ten kod i rozbudować go o nowe funkcje za rok. Co by napotkała? Jakie problemy by miała?</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">
+        <span class="arrow">▶</span> Przykładowe odpowiedzi
+      </button>
+      <div class="answer-body">
+        <div class="answer-item">Nie ma żadnych komentarzy w kodzie, zmienne mają nazwy <code>x</code>, <code>tmp2</code>, <code>data</code> — nie wiadomo, co oznaczają.</div>
+        <div class="answer-item">Nie ma żadnych testów — nie wiadomo, czy po zmianie czegoś inne rzeczy dalej działają.</div>
+        <div class="answer-item">Projekt działa lokalnie na moim komputerze, ale nie mam pojęcia, jak uruchomić go na innym — nie ma dokumentacji instalacji.</div>
+        <div class="answer-item">Cała logika jest w jednej funkcji, która ma 300 linii — żeby zmienić jedną rzecz, trzeba rozumieć wszystko naraz.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Różnorodność systemów — nie ma jednego uniwersalnego rozwiązania</h2>
+    </div>
+    <p>Zanim przejdziemy do tego, co inżynieria oprogramowania stara się osiągnąć, warto zdać sobie sprawę z ogromnej różnorodności systemów, które wchodzą w zakres tej dyscypliny. „Oprogramowanie” to nie jedna kategoria — kryje się pod tym słowem kilka zupełnie różnych typów systemów:</p>
+    <p><strong>Aplikacje autonomiczne</strong> działają lokalnie — edytor tekstu, gra zainstalowana na komputerze, program do edycji zdjęć. Zawierają całą swoją funkcjonalność w sobie i nie wymagają połączenia z siecią. <strong>Aplikacje transakcyjne oparte na sieci</strong> działają na zdalnych serwerach i są dostępne przez przeglądarkę lub aplikację mobilną — sklepy internetowe, bankowość online, systemy rezerwacyjne. Korzysta z nich wiele osób jednocześnie, co rodzi zupełnie inne wyzwania.</p>
+    <p><strong>Systemy wbudowane</strong> sterują urządzeniami fizycznymi — od pralki przez sterownik silnika w samochodzie po system zarządzania lotem w samolocie. Jest ich więcej niż jakiegokolwiek innego rodzaju oprogramowania, a ich awaria ma często bezpośrednie konsekwencje fizyczne. <strong>Systemy systemów</strong> to rozbudowane ekosystemy składające się z wielu podsystemów, często tworzonych przez różne organizacje, które muszą ze sobą współpracować — jak krajowa infrastruktura energetyczna czy systemy zarządzania ruchem lotniczym.</p>
+    <p>Dlaczego ta różnorodność jest istotna? Bo nie istnieje jeden uniwersalny zestaw metod pasujący do wszystkich. To, co sprawdza się przy tworzeniu gry (szybkie prototypowanie, iteracyjne budowanie), zupełnie nie sprawdzi się przy oprogramowaniu sterującym reaktorem jądrowym (gdzie niezbędna jest formalna weryfikacja poprawności). Dobór metod zawsze zależy od typu systemu, wymagań i kontekstu — i tego właśnie uczy inżynieria oprogramowania.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Koszty błędów — im później, tym drożej</h2>
+    </div>
+    <p>Jednym z najważniejszych argumentów za stosowaniem inżynierskich metod od samego początku projektu jest struktura kosztów błędów. Intuicja mówi nam, że błąd to błąd, niezależnie od tego, kiedy go znajdziemy. Rzeczywistość wygląda zupełnie inaczej.</p>
+    <p>Wyobraź sobie, że budujesz dom. Jeśli na etapie rozmowy z architektem powiesz: „a może wejście jednak od drugiej strony?” — architekt nanosi poprawkę na rysunek w kilka minut. Jeśli to samo powiesz po wylaniu fundamentów, korekta będzie kosztować wielokrotnie więcej. Jeśli zgłosisz to po wybudowaniu ścian — kilkanaście razy więcej. A jeśli powiesz to po oddaniu domu do użytku — przebudowa może kosztować więcej niż cały oryginalny projekt.</p>
+
+    <div class="pullquote">Naprawienie błędu w wymaganiach po wdrożeniu systemu może kosztować do 100 razy więcej niż naprawienie go na etapie specyfikacji.</div>
+
+    <p>Dlaczego? Błąd w wymaganiach to błąd w założeniach, na których opiera się cały projekt. Jeśli przez miesiące cały zespół projektował system, zakładając że użytkownik może mieć jedno konto bankowe, a okazuje się na końcu, że potrzebuje kilku — trzeba przeprojektować model danych, zmienić interfejsy, przepisać logikę biznesową, dostosować testy, zaktualizować dokumentację i wdrożyć nową wersję. To kaskada zmian wynikająca z jednego błędnego założenia.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Faza wykrycia błędu</th>
+            <th>Względny koszt naprawy</th>
+            <th>Co trzeba poprawić?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Analiza wymagań</td><td>1×</td><td>Dokument wymagań — kilka zdań</td></tr>
+          <tr><td>Projekt systemu</td><td>3–6×</td><td>Schematy architektury, modele</td></tr>
+          <tr><td>Implementacja</td><td>10×</td><td>Kod + projekt + wymagania</td></tr>
+          <tr><td>Testowanie</td><td>20–40×</td><td>Kod + testy + integracja</td></tr>
+          <tr><td>Po wdrożeniu</td><td>60–100×</td><td>Wszystko powyżej + migracja danych, wdrożenie, klienci</td></tr>
+        </tbody>
+      </table>
+      <p class="table-caption">Tabela 1. Względne koszty naprawy błędu w zależności od fazy jego wykrycia.</p>
+    </div>
+
+    <p>Dane z tabeli to przybliżenia ilustrujące ogólną zasadę, nie precyzyjne pomiary — ale zasada jest solidna i potwierdzona w dziesiątkach branżowych badań. Praktyczna konsekwencja jest prosta: <strong>inwestowanie czasu w dokładną analizę wymagań, projektowanie i testowanie opłaca się wielokrotnie bardziej niż pochopne rzucanie się w kodowanie</strong>. Co więcej, dla systemów o długim cyklu życia koszty <em>utrzymania</em> po wdrożeniu mogą być wielokrotnie wyższe niż koszty pierwotnego wytworzenia — decyzje architektoniczne podjęte podczas tworzenia mają wpływ na koszty ponoszone przez całe lata.</p>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Czym jest jakość oprogramowania?</h2>
+    </div>
+    <p>Teraz, gdy wiemy już, dlaczego błędy są drogie, możemy zapytać: a co właściwie chcemy osiągnąć? Czym jest „dobre” oprogramowanie? Najprostsza odpowiedź brzmi: oprogramowanie jest dobre, jeśli robi to, co ma robić. Ale to za mało — z kilku powodów.</p>
+    <p>Po pierwsze, specyfikacja może być niekompletna lub błędna. Możesz napisać system, który idealnie realizuje specyfikację, a który mimo to jest bezużyteczny, bo specyfikacja nie opisywała tego, czego klient naprawdę potrzebował. Po drugie, istnieje napięcie między tym, czego oczekuje klient (szybkość, niezawodność, bezpieczeństwo), a tym, czego potrzebuje deweloper (kod łatwy w utrzymaniu). Dlatego zamiast mówić o „zgodności ze specyfikacją”, lepiej myśleć o jakości jako <strong class="term">zdatności do celu</strong> (ang. <em>fitness for purpose</em>).</p>
+    <p>Dobre oprogramowanie charakteryzują cztery kluczowe atrybuty:</p>
+
+    <div class="attr-grid">
+      <div class="attr-card">
+        <h4>Utrzymywalność</h4>
+        <span class="attr-en">maintainability</span>
+        <p>Oprogramowanie można modyfikować w odpowiedzi na zmieniające się potrzeby. Wymagania zawsze się zmieniają — biznes, przepisy, technologia. Kod, którego nie da się zmodyfikować bez ogromnego nakładu pracy, jest ciężarem, nie aktywem.</p>
+      </div>
+      <div class="attr-card">
+        <h4>Niezawodność i bezpieczeństwo</h4>
+        <span class="attr-en">dependability &amp; security</span>
+        <p>System działa poprawnie nawet gdy coś się psuje. Nie wyrządza fizycznej ani ekonomicznej krzywdy w razie awarii. Złośliwy użytkownik nie może go uszkodzić ani przejąć.</p>
+      </div>
+      <div class="attr-card">
+        <h4>Wydajność</h4>
+        <span class="attr-en">efficiency</span>
+        <p>System nie marnotrawi zasobów — pamięci, procesora, sieci. Responsywność, czas przetwarzania, zużycie pamięci. Aplikacja mobilna rozładowująca baterię po godzinie nie jest wydajna.</p>
+      </div>
+      <div class="attr-card">
+        <h4>Akceptowalność</h4>
+        <span class="attr-en">acceptability</span>
+        <p>System jest zrozumiały, użyteczny i kompatybilny z innymi narzędziami użytkowników. Technicznie perfekcyjny system, którego nikt nie potrafi obsługiwać bez miesięcznego szkolenia, nie jest dobrym systemem.</p>
+      </div>
+    </div>
+
+    <p>Co ważne — atrybuty te mogą być ze sobą sprzeczne. Maksymalna wydajność może wymagać kompromisów w czytelności kodu (a więc w utrzymywalności). Maksymalna niezawodność może spowalniać działanie. Zadaniem inżyniera nie jest osiągnięcie absolutnego maksimum każdego atrybutu — to niemożliwe — ale <strong>świadome dobieranie kompromisów</strong> odpowiednich do kontekstu. W systemie sterującym hamulcami samolotu niezawodność stoi bezwzględnie na pierwszym miejscu. Aplikacja do zamawiania kawy może postawić na akceptowalność i szybkość dostarczania nowych funkcji.</p>
+
+    <div class="discussion">
+      <div class="disc-header">
+        <div class="disc-icon">?</div>
+        <span class="disc-label">Dyskusja</span>
+      </div>
+      <p class="question">Pomyśl o aplikacji mobilnej, z której korzystasz codziennie. Który z czterech atrybutów jest dla ciebie — jako osoby korzystającej z niej na co dzień — najważniejszy? A który na drugi rzut oka okazuje się ważniejszy, niż mogłoby się wydawać?</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">
+        <span class="arrow">▶</span> Przykładowe odpowiedzi
+      </button>
+      <div class="answer-body">
+        <div class="answer-item">Powiedziałabym, że najważniejsze jest bezpieczeństwo — ale gdyby aplikacja była bezpieczna, a kompletnie nieużywalna, i tak bym z niej nie korzystała. Akceptowalność okazuje się ważniejsza, niż myślałam na początku.</div>
+        <div class="answer-item">Google Maps jest dla mnie ważne, bo jest szybkie — odpowiada w ułamku sekundy. Gdyby wymagało pięciu sekund na przeliczenie trasy, przestałbym z niego korzystać, nawet gdyby było dokładniejsze.</div>
+        <div class="answer-item">Utrzymywalność to coś, o czym rzadko myślimy jako osoby korzystające z aplikacji — ale bez niej aplikacje przestają być aktualizowane i po roku są do niczego, więc pośrednio jest kluczowa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Podstawowe aktywności w procesie wytwarzania oprogramowania</h2>
+    </div>
+    <p>Niezależnie od tego, jaki model procesu stosuje dana organizacja, wszystkie procesy wytwarzania oprogramowania składają się z czterech podstawowych aktywności. Różnią się one kolejnością i sposobem organizacji, ale nie da się ich pominąć — można jedynie zaniedbać, co zwykle kończy się źle.</p>
+
+    <div class="process-flow">
+      <div class="process-step">
+        <div class="ps-num">01</div>
+        <h4>Specyfikacja</h4>
+        <p>Co system ma robić? Wymagania funkcjonalne i niefunkcjonalne. Fundament całego projektu.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">02</div>
+        <h4>Tworzenie</h4>
+        <p>Projektowanie architektury i programowanie — zamiana wymagań w działający system.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">03</div>
+        <h4>Walidacja</h4>
+        <p>Czy to, co stworzyliśmy, spełnia potrzeby klientów? Testowanie na wielu poziomach.</p>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">04</div>
+        <h4>Ewolucja</h4>
+        <p>Wszystko, co dzieje się po wdrożeniu. Wymagania się zmieniają — system musi za nimi nadążać.</p>
+      </div>
+    </div>
+
+    <p><strong>Specyfikacja</strong> to faza, w której klienci i inżynierowie wspólnie definiują, co system ma robić i jakie musi spełniać ograniczenia. To tutaj odkrywamy wymagania — zarówno funkcjonalne (co system robi) jak i niefunkcjonalne (jak to robi: jak szybko, jak bezpiecznie, z jaką dostępnością). To fundament, na którym stoi cały projekt — i, jak widzieliśmy, błędy popełnione tutaj są najdroższe w naprawie.</p>
+    <p><strong>Walidacja</strong> to sprawdzenie, czy to, co stworzyliśmy, spełnia potrzeby klientów. Warto tu rozróżnić: <em>weryfikacja</em> sprawdza, czy system jest zbudowany zgodnie ze specyfikacją; <em>walidacja</em> sprawdza, czy specyfikacja opisywała to, czego klient naprawdę potrzebował. To subtelna, ale zasadnicza różnica.</p>
+    <p><strong>Ewolucja</strong> to wszystko, co dzieje się po wdrożeniu. Wymagania się zmieniają, środowisko się zmienia, pojawiają się błędy, które uszły uwadze podczas testowania. Dobrze zaprojektowane oprogramowanie może ewoluować — źle zaprojektowane szybko staje się ciężarem, który firma chce wyrzucić i zastąpić nowym, co jest bardzo kosztowne.</p>
+    <p>W klasycznym modelu kaskadowym (waterfall) te aktywności mają wyraźne granice i odbywają się sekwencyjnie. W podejściach zwinnych (agile) są przeplecione i powtarzają się w krótkich cyklach. O modelach procesów będziemy rozmawiać szczegółowo na kolejnym wykładzie.</p>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Inżynieria oprogramowania a etyka zawodowa</h2>
+    </div>
+    <p>Oprogramowanie jest wszechobecne i jego wpływ na świat jest ogromny. To oznacza, że inżynierowie oprogramowania mają większe możliwości wyrządzenia krzywdy — lub dobra — niż większość innych profesji. Błąd mechanika samochodowego może uszkodzić jeden samochód. Błąd w oprogramowaniu banku może dotknąć milionów klientów jednocześnie. Celowo zaprojektowane uzależniające mechanizmy w aplikacji mobilnej mogą wpłynąć na zdrowie psychiczne setek milionów ludzi.</p>
+    <p>Etyka w inżynierii oprogramowania to nie tylko przestrzeganie prawa — to przyjęcie zestawu zasad postępowania wykraczających poza minimalne wymogi prawne. Etyczne zachowanie to coś więcej niż unikanie łamania przepisów — to postępowanie zgodne z zasadami, które są moralnie słuszne, nawet gdy prawo ich nie wymaga.</p>
+    <p>ACM (Association for Computing Machinery) i IEEE (Institute of Electrical and Electronics Engineers) opracowały wspólnie <strong>Kodeks Etyki Inżynierów Oprogramowania</strong>, który stanowi, że inżynierowie oprogramowania powinni działać w interesie publicznym, utrzymywać wysokie standardy produktów, których się podejmują, zachowywać uczciwość i niezależność zawodową oraz brać udział w ciągłym doskonaleniu zawodowym.</p>
+    <p>Praktyczne dylematy etyczne pojawiają się częściej niż mogłoby się wydawać: co robisz, gdy pracodawca każe ci wdrożyć system naruszający prywatność użytkowników, ale legalny? Gdy widzisz poważny błąd bezpieczeństwa, a klient nie chce go naprawić? To nie są abstrakcyjne pytania — to realne sytuacje, z którymi każdego roku mierzą się tysiące inżynierów. To właściwy moment, żeby zacząć o tym myśleć — zanim te dylematy pojawią się na prawdziwym projekcie.</p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>AI jako narzędzie dewelopera — pierwsze spojrzenie</h2>
+    </div>
+    <p>Nie można dziś mówić o inżynierii oprogramowania bez wspomnienia o roli sztucznej inteligencji w warsztacie dewelopera. To temat, do którego wrócimy bardziej szczegółowo pod koniec semestru — ale warto zasiać ziarno już teraz, żeby od pierwszych zajęć praktycznych korzystać z tych narzędzi świadomie.</p>
+
+    <div class="ai-box">
+      <div class="ai-label">Czym są narzędzia AI dla deweloperów?</div>
+      <h3>Asystenci kodowania oparci na LLM</h3>
+      <p>GitHub Copilot, Cursor, Amazon CodeWhisperer, ChatGPT, Claude — to narzędzia generujące kod na podstawie opisu w języku naturalnym, uzupełniające zaczęty kod, tłumaczące istniejący kod, sugerujące refaktoryzacje, pomagające w pisaniu testów i generujące dokumentację.</p>
+      <p>Są one statystycznymi modelami językowymi wytrenowanymi na ogromnych ilościach kodu. Potrafią rozpoznawać wzorce i generować tekst, który statystycznie wygląda jak dobry kod. <strong style="color:#fff">Nie rozumieją</strong> twojego systemu, twojego biznesu ani twojego kontekstu.</p>
+      <div class="ai-uses">
+        <span style="font-family:var(--sans);font-size:11px;font-weight:800;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;align-self:center;">Sprawdza się przy:</span>
+        <span class="ai-tag good">generowaniu boilerplate</span>
+        <span class="ai-tag good">eksploracji nowych bibliotek</span>
+        <span class="ai-tag good">pierwszych wersjach testów</span>
+        <span class="ai-tag good">tłumaczeniu nieznanego kodu</span>
+        <span style="font-family:var(--sans);font-size:11px;font-weight:800;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;align-self:center;margin-top:6px;width:100%;">Wymaga ostrożności przy:</span>
+        <span class="ai-tag bad">złożonej logice biznesowej</span>
+        <span class="ai-tag bad">bezpieczeństwie</span>
+        <span class="ai-tag bad">kodzie bez weryfikacji</span>
+      </div>
+    </div>
+
+    <p>Paradoks AI w inżynierii oprogramowania brzmi tak: <strong>narzędzia AI są najbardziej użyteczne dla osób, które rozumieją, co robią — i najmniej niebezpieczne dla tych samych osób.</strong> Dla kogoś, kto nie rozumie generowanego kodu, jest to narzędzie wysokiego ryzyka: można wkleić do systemu kod z poważnymi błędami bezpieczeństwa, nie mając pojęcia, że coś jest nie tak. Właśnie dlatego solidne fundamenty inżynierskie są w dobie AI ważniejsze niż kiedykolwiek wcześniej.</p>
+    <p>Na zajęciach laboratoryjnych możesz od początku eksperymentować z narzędziami AI jako asystentami — traktuj je jako <em>drugiego pilota</em>, a nie kapitana statku. Kod wygenerowany przez AI zawsze wymaga przeczytania i weryfikacji, zanim go użyjesz.</p>
+
+    <div class="discussion">
+      <div class="disc-header">
+        <div class="disc-icon">?</div>
+        <span class="disc-label">Dyskusja</span>
+      </div>
+      <p class="question">Czy masz już za sobą doświadczenia z narzędziami AI do pisania kodu — ChatGPT, GitHub Copilot, Cursor? Jeśli tak — co ci to dało i co sprawiało trudności? Jeśli nie — czego się spodziewasz i czego się obawiasz?</p>
+      <button class="answer-toggle" onclick="toggleAnswer(this)">
+        <span class="arrow">▶</span> Przykładowe odpowiedzi
+      </button>
+      <div class="answer-body">
+        <div class="answer-item">Używałam ChatGPT do zadań na algorytmach. Czasem działało świetnie, czasem generowało kod wyglądający poprawnie, który jednak się nie kompilował albo zwracał błędne wyniki na edge case’ach. Nauczyłam się zawsze testować na kilku przykładach.</div>
+        <div class="answer-item">Nie używałem, ale boję się, że jak zacznę, to przestanę się uczyć i będę tylko kopiował kod bez zrozumienia, co w nim jest.</div>
+        <div class="answer-item">Copilot znacząco przyspiesza pisanie boilerplate — szczególnie gdy trzeba napisać piętnasty podobny handler HTTP. Ale do skomplikowanej logiki biznesowej jest bezużyteczny, bo nie zna naszego systemu.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div id="summary">
+    <h2>Co zapamiętać z tego wykładu</h2>
+    <div class="summary-items">
+      <div class="summary-item"><p>Inżynieria oprogramowania to nie „programowanie na dużą skalę” — to dyscyplina zajmująca się <strong style="color:#fff">wszystkimi aspektami</strong> wytwarzania systemów, od wymagań po wycofanie z eksploatacji.</p></div>
+      <div class="summary-item"><p>Koszty błędów rosną drastycznie z każdą fazą projektu. Błąd w wymaganiach naprawiony po wdrożeniu kosztuje <strong style="color:#fff">do 100× więcej</strong> niż naprawiony na etapie specyfikacji.</p></div>
+      <div class="summary-item"><p>Jakość oprogramowania to cztery atrybuty: utrzymywalność, niezawodność, wydajność i akceptowalność — żaden nie jest bezwarunkowo ważniejszy, właściwy kompromis zależy od kontekstu.</p></div>
+      <div class="summary-item"><p>Każdy proces wytwarzania obejmuje cztery aktywności: specyfikację, tworzenie, walidację i ewolucję. Można je organizować różnie — nie można ich pominąć.</p></div>
+      <div class="summary-item"><p>Etyka to nieodłączny element zawodu — osoby pracujące w tej branży tworzą systemy wpływające na życie milionów ludzi i ponoszą za to odpowiedzialność.</p></div>
+      <div class="summary-item"><p>Narzędzia AI przyspieszają pracę, ale wymagają weryfikacji. Są najbardziej użyteczne dla tych, którzy <strong style="color:#fff">rozumieją</strong> zasady inżynierii oprogramowania.</p></div>
+    </div>
+    <div class="next-lecture">
+      <strong>Następny wykład:</strong> Modele procesu wytwarzania oprogramowania — waterfall, spiralny, RUP i SCRUM. Jak organizować cztery podstawowe aktywności w czasie i dlaczego różne projekty wymagają różnych podejść. Oraz: planowanie projektu, szacowanie pracochłonności i zarządzanie ryzykiem — bo sprinty zaczynają się już wkrótce.
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+  // Toggle answer boxes
+  function toggleAnswer(btn) {
+    btn.classList.toggle('open');
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  // Active TOC link on scroll
+  const sections = document.querySelectorAll('.section, #hero, #summary');
+  const tocLinks = document.querySelectorAll('#toc a');
+  const progressBar = document.getElementById('progress-bar');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        tocLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  });
+</script>
+</body>
+</html>
